@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const isValid = validateForm();
 
     if (isValid) {
-      // Show Success Modal & Confetti
       modal.classList.add('active');
 
       if (typeof confetti === 'function') {
@@ -30,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     requiredFields.forEach(field => {
       const container = field.closest('.field');
+      if (!container) return;
+
       let fieldValid = true;
 
       if (field.type === 'radio') {
@@ -43,12 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (field.type === 'email') {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         fieldValid = emailPattern.test(field.value.trim());
-      } else if (field.type === 'number' && field.id === 'satisfaction') {
-        const val = parseInt(field.value, 10);
-        fieldValid = !isNaN(val) && val >= 1 && val <= 10;
-      } else if (field.type === 'number' && field.id === 'age') {
-        const val = parseInt(field.value, 10);
-        fieldValid = !isNaN(val) && val >= 18 && val <= 100;
       } else {
         fieldValid = field.value.trim() !== '';
       }
@@ -79,6 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('change', (e) => {
     const container = e.target.closest('.field');
     if (container) container.classList.remove('invalid');
+  });
+
+  form.addEventListener('reset', () => {
+    setTimeout(() => {
+      form.querySelectorAll('.field').forEach(c => c.classList.remove('invalid'));
+    }, 10);
   });
 
   // Modal Close Button
